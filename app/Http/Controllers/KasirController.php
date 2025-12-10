@@ -2,136 +2,82 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\barang;
-use App\Models\Transaksi;
-use App\Models\TransaksiItem;
+use App\Models\Barang;
+use App\Services\CartService;
+use App\Services\TransaksiService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 class KasirController extends Controller
 {
-   public function index(Request $request)
-{
-    $search = $request->search;
+    protected $cart;
+    protected $trx;
 
-    $barang = Barang::when($search, function ($query) use ($search) {
-        $query->where('nama', 'like', '%' . $search . '%');
-    })->get();
+    public function __construct(CartService $cart, TransaksiService $trx)
+    {
+        $this->cart = $cart;
+        $this->trx = $trx;
+    }
 
-    $cart = Session::get('cart', []);
+    public function index(Request $request)
+    {
+        $search = $request->search;
 
-    return view('kasir.index', compact('barang', 'cart', 'search'));
-}
+        $barang = Barang::when($search, fn($q) =>
+            $q->where('nama', 'like', "%$search%")
+        )->get();
 
+        return view('kasir.index', [
+            'barang' => $barang,
+            'cart' => $this->cart->get(),
+            'search' => $search
+        ]);
+    }
 
     public function add(Request $request)
     {
-        $barang = Barang::find($request->product_id);
+        $this->cart->add($request->product_id);
+        return back()->with('success', 'Barang ditambahkan');
+    }
 
-        $cart = Session::get('cart', []);
+    public function plus($id)
+    {
+        $this->cart->plus($id);
+        return back();
+    }
 
-        // Jika barang sudah ada, tambah qty
-        if (isset($cart[$barang->id])) {
-            $cart[$barang->id]['qty']++;
-        } else {
-            $cart[$barang->id] = [
-                'nama' => $barang->nama,
-                'harga' => $barang->harga,
-                'qty' => 1,
-            ];
-        }
+    public function minus($id)
+    {
+        $this->cart->minus($id);
+        return back();
+    }
 
-        Session::put('cart', $cart);
+    public function delete($id)
+    {
+        $this->cart->delete($id);
         return back();
     }
 
     public function submit(Request $request)
-{
-    $cart = Session::get('cart', []);
+    {
+        $cart = $this->cart->get();
 
-    if (empty($cart)) {
-        return back()->with('error', 'Keranjang kosong!');
+        if (empty($cart)) {
+            return back()->with('error', 'Keranjang kosong!');
+        }
+
+        $result = $this->trx->prosesTransaksi(
+            $cart,
+            $request->bayar,
+            auth()->id()
+        );
+
+        if (!$result['status']) {
+            return back()->with('error', $result['msg']);
+        }
+
+        $this->cart->clear();
+
+        return redirect()->route('kasir.index')
+            ->with('success', 'Transaksi Berhasil! Kembalian: Rp ' . $result['kembalian']);
     }
-
-    // Hitung total
-    $total = array_sum(array_map(fn($x) => $x['harga'] * $x['qty'], $cart));
-
-    $bayar = (int)$request->bayar;
-
-    //  Validasi uang bayar kurang
-    if ($bayar < $total) {
-        return back()->with('error', 'Uang yang dibayarkan kurang! Total: Rp ' . number_format($total));
-    }
-
-    // Hitung kembalian
-    $kembalian = $bayar - $total;
-
-    // Generate kode transaksi
-    $kode = 'TRX-' . time();
-
-    // Simpan transaksi
-    $transaksi = Transaksi::create([
-        'user_id'        => auth()->id(),
-        'kode_transaksi' => $kode,
-        'total'          => $total,
-        'bayar'          => $bayar,
-        'kembalian'      => $kembalian,
-    ]);
-
-    // Simpan item transaksi
-    foreach ($cart as $id => $item) {
-        TransaksiItem::create([
-            'transaksi_id' => $transaksi->id,
-            'product_id' => $id,          //  Sesuaikan nama kolom
-            'qty' => $item['qty'],
-            'harga' => $item['harga'],
-            'subtotal' => $item['harga'] * $item['qty'],
-        ]);
-    }
-
-    // Kosongkan keranjang
-    Session::forget('cart');
-
-    return redirect()->route('kasir.index')->with('success',
-        'Transaksi Berhasil! Kembalian: Rp ' . number_format($kembalian)
-    );
-}
-
-    public function plus($id)
-{
-    $cart = session()->get('cart', []);
-
-    if (isset($cart[$id])) {
-        $cart[$id]['qty'] += 1;
-    }
-
-    session()->put('cart', $cart);
-    return back();
-}
-
-public function minus($id)
-{
-    $cart = session()->get('cart', []);
-
-    if (isset($cart[$id]) && $cart[$id]['qty'] > 1) {
-        $cart[$id]['qty'] -= 1;
-    }
-
-    session()->put('cart', $cart);
-    return back();
-}
-
-public function delete($id)
-{
-    $cart = session()->get('cart', []);
-
-    if (isset($cart[$id])) {
-        unset($cart[$id]);
-    }
-
-    session()->put('cart', $cart);
-    return back();
-}
-
-
 }
