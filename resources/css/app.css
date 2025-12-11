@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* ====== TABEL KASIR DARK MODE ====== */
+.table-dark {
+    background-color: #1f2937; /* abu gelap */
+    color: #f9fafb;            /* teks putih */
+}
+
+.table-dark th {
+    background-color: #374151; /* lebih gelap utk header */
+    color: #f9fafb;
+    border-bottom: 1px solid #4b5563;
+}
+
+.table-dark td {
+    border-bottom: 1px solid #4b5563;
+}
+
+/* style button tambah / hapus */
+.btn-kasir {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+/* tombol tambah */
+.btn-tambah {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-tambah:hover {
+    background-color: #1d4ed8;
+}
+
+/* tombol hapus */
+.btn-hapus {
+    background-color: #dc2626;
+    color: white;
+}
+
+.btn-hapus:hover {
+    background-color: #b91c1c;
+}
