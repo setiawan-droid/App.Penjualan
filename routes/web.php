@@ -63,5 +63,12 @@ Route::middleware(['auth'])->group(function () {
 
 
     // LAPORAN
-    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/laporan', [\App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/pdf', [\App\Http\Controllers\LaporanController::class, 'exportPdf'])
+    ->name('laporan.pdf')
+    ->middleware('auth');
+
+});
+
 });
