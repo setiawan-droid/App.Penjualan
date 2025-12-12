@@ -158,6 +158,7 @@ class KasirController extends Controller
             $barang = Barang::find($id);
 
             // Kurangi stok
+           // dd($barang->stok .'--'. $item['qty']); //debug stok
             $barang->stok -= $item['qty'];
             $barang->save();
 
