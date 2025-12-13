@@ -52,7 +52,7 @@
                 <h3 class="text-md font-semibold mb-3 text-gray-700 dark:text-gray-200">Daftar Barang</h3>
 
                 <table class="w-full text-left text-gray-800 dark:text-gray-200">
-                    <thead class="bg-gray-200 dark:bg-gray-600">
+                    <thead class="w-full text-left">
                         <tr>
                             <th class="p-2 border">Nama</th>
                             <th class="p-2 border">Harga</th>
@@ -69,7 +69,7 @@
                                     <form action="{{ route('kasir.add') }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $item->id }}">
-                                        <button class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow">
+                                        <button  class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow">
                                             Tambah
                                         </button>
                                     </form>
@@ -100,14 +100,14 @@
                 </p>
 
             @else
-                <table class="w-full rounded-lg overflow-hidden shadow">
-                    <thead>
-                        <tr class="border-b bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200">
-                            <th class="p-2 text-left">Barang</th>
-                            <th class="p-2">Harga</th>
-                            <th class="p-2">Qty</th>
-                            <th class="p-2">Subtotal</th>
-                            <th class="p-2">Aksi</th>
+                <table class="w-full text-left">
+                    <thead border =1>
+                        <tr class="w-full text-left">
+                            <th class="p-2  border text-left">Barang</th>
+                            <th class="p-2 border">Harga</th>
+                            <th class="p-2 border">Qty</th>
+                            <th class="p-2 border">Subtotal</th>
+                            <th class="p-2 border">Aksi</th>
                         </tr>
                     </thead>
 
@@ -121,11 +121,11 @@
                             @endphp
 
                             <tr class="border-b hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="p-2">{{ $c['nama'] }}</td>
+                                <td class="p-2 border">{{ $c['nama'] }}</td>
 
-                                <td class="p-2 font-medium">Rp {{ number_format($c['harga']) }}</td>
+                                <td class="p-2 border font-medium">Rp {{ number_format($c['harga']) }}</td>
 
-                                <td class="p-2 text-center">
+                                <td class="p-2 border text-center">
                                     <div class="flex justify-center items-center space-x-2">
 
                                         {{-- MINUS --}}
@@ -137,7 +137,7 @@
                                         </form>
 
                                         {{-- QTY --}}
-                                        <span class="px-3 py-1 bg-gray-100 dark:bg-gray-600 rounded-lg border">
+                                        <span class="px-3 py-1 bg-gray-1000 dark:bg-gray-100 rounded-lg border">
                                             {{ $c['qty'] }}
                                         </span>
 
@@ -151,9 +151,9 @@
                                     </div>
                                 </td>
 
-                                <td class="p-2 font-medium">Rp {{ number_format($sub) }}</td>
+                                <td class="p-2 border font-medium">Rp {{ number_format($sub) }}</td>
 
-                                <td class="p-2 text-center">
+                                <td class="p-2 border text-center">
                                     <form action="{{ route('kasir.delete', $id) }}" method="POST">
                                         @csrf
                                         <button
@@ -182,13 +182,14 @@
                 <form action="{{ route('kasir.submit') }}" method="POST" class="mt-6">
                     @csrf
 
-                    <label class="block font-bold mb-2 text-gray-700 dark:text-gray-200">
+                    <label class="block font-bold mb-2 text-gray-700 dark:text-gray-100">
                         Bayar:
                     </label>
 
                     <div class="flex items-center gap-3">
                         <input type="number" name="bayar"
-                            class="border p-2 rounded-lg w-1/3 focus:ring-2 focus:ring-blue-300">
+                            class="border rounded-lg px-4 py-2 w-48 focus:ring-2 focus:ring-blue-300"
+                            placeholder="Masukkan jumlah bayar" required>
 
                         <button
                             class="px-5 py-2 rounded-lg bg-green-700 hover:bg-green-800 text-white shadow">
