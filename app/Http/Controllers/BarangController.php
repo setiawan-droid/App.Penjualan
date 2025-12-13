@@ -4,18 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseFormatter;
 
 class BarangController extends Controller
 {
     public function index()
     {
         $barang = Barang::orderBy('id', 'desc')->get();
-        return view('barang.index', compact('barang'));
+        return ResponseFormatter::view('barang.index', compact('barang'));
     }
 
     public function create()
     {
-        return view('barang.create');
+        return ResponseFormatter::view('barang.create');
     }
 
     public function store(Request $request)
@@ -26,47 +27,45 @@ class BarangController extends Controller
             'stok' => 'required|numeric'
         ]);
 
-        Barang::create([
-            'nama' => $request->nama,
-            'harga' => $request->harga,
-            'stok' => $request->stok,
+        Barang::create($request->only(['nama', 'harga', 'stok']));
+
+        return ResponseFormatter::successRedirect(
+            'barang.index',
+            'Barang berhasil ditambahkan!'
+        );
+    }
+
+    public function edit($id)
+    {
+        $barang = Barang::findOrFail($id);
+        return ResponseFormatter::view('barang.edit', compact('barang'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'harga' => 'required|numeric',
+            'stok' => 'required|numeric'
         ]);
 
-        return redirect()->route('barang.index')
-            ->with('success', 'Barang berhasil ditambahkan!');
+        $barang = Barang::findOrFail($id);
+        $barang->update($request->only(['nama', 'harga', 'stok']));
+
+        return ResponseFormatter::successRedirect(
+            'barang.index',
+            'Barang berhasil diperbarui!'
+        );
     }
-    public function edit($id)
-{
-    $barang = Barang::findOrFail($id);
-    return view('barang.edit', compact('barang'));
-}
 
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'nama' => 'required',
-        'harga' => 'required|numeric',
-        'stok' => 'required|numeric'
-    ]);
+    public function destroy($id)
+    {
+        $barang = Barang::findOrFail($id);
+        $barang->delete();
 
-    $barang = Barang::findOrFail($id);
-
-    $barang->update([
-        'nama' => $request->nama,
-        'harga' => $request->harga,
-        'stok' => $request->stok,
-    ]);
-
-    return redirect()->route('barang.index')
-        ->with('success', 'Barang berhasil diperbarui!');
-}
-public function destroy($id)
-{
-    $barang = Barang::findOrFail($id);
-    $barang->delete();
-
-    return redirect()->route('barang.index')
-        ->with('success', 'Barang berhasil dihapus!');
-}
-
+        return ResponseFormatter::successRedirect(
+            'barang.index',
+            'Barang berhasil dihapus!'
+        );
+    }
 }

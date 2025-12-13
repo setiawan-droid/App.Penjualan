@@ -1,59 +1,233 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Aplikasi Penjualan – Dokumentasi & README
+ Deskripsi Proyek
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi Penjualan ini adalah sistem Point of Sale (POS) sederhana berbasis Laravel 12 + Breeze yang digunakan untuk mengelola barang, transaksi penjualan, laporan, serta pencatatan log aktivitas pengguna.
+Aplikasi ini cocok digunakan untuk toko kecil, minimarket, koperasi sekolah, atau UKM.
 
-## About Laravel
+ Fitur Utama
+ 1. Autentikasi & Manajemen Pengguna
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Login & Logout (Laravel Breeze)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Registrasi pengguna
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Logging aktivitas login & logout ke file khusus (auth.log)
 
-## Learning Laravel
+ 2. Manajemen Barang
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Daftar barang dalam bentuk tabel elegan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Tambah barang
 
-## Laravel Sponsors
+Edit barang
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Hapus barang
 
-### Premium Partners
+Pencarian barang berdasarkan nama
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+ 3. Kasir / Penjualan
 
-## Contributing
+Memilih barang dari tabel produk
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Menambah barang ke keranjang
 
-## Code of Conduct
+Menambah / mengurangi qty
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Menghapus item dari keranjang
 
-## Security Vulnerabilities
+Validasi pembayaran:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Tidak boleh melakukan checkout jika uang bayar kurang
 
-## License
+Proses transaksi tersimpan ke:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+tabel transaksis
+
+tabel transaksi_items
+
+ 4. Laporan Penjualan
+
+Filter laporan berdasarkan tanggal awal – akhir
+
+Export PDF laporan penjualan
+
+PDF berisi:
+
+Judul besar: "Laporan Penjualan"
+
+Periode laporan
+
+Garis pemisah
+
+Tabel transaksi
+
+Tanda tangan user di bagian bawah
+
+ 5. Logging Aktivitas
+
+File khusus untuk logging:
+
+local.INFO
+
+local.WARNING
+
+local.ERROR
+
+authlog (login/logout)
+
+Mendukung debugging dan audit sistem
+
+ Teknologi yang Digunakan
+Kategori	Teknologi
+Framework Backend	Laravel 12
+Autentikasi	Laravel Breeze
+Basis Data	MySQL
+Frontend	Blade + Tailwind (bawaan Breeze)
+Logging	Laravel Log Channels
+Export PDF	DomPDF / Snappy / Laravel PDF
+
+ Struktur Direktori Penting
+
+app/
+ ├─ Http/
+ │   ├─ Controllers/
+ │   │   ├─ BarangController.php
+ │   │   ├─ KasirController.php
+ │   │   └─ LaporanController.php
+ │   └─ Requests/
+ ├─ Models/
+ │   ├─ Barang.php
+ │   ├─ Transaksi.php
+ │   └─ TransaksiItem.php
+
+resources/
+ ├─ views/
+ │   ├─ barang/
+ │   ├─ kasir/
+ │   ├─ laporan/
+ │   └─ layouts/
+
+routes/
+ └─ web.php
+
+ Struktur Database
+1. tabel barang
+Field	Tipe	Keterangan
+id	bigint	Primary key
+nama	varchar	Nama barang
+harga	decimal	Harga barang
+stok	int	Jumlah stok
+created_at	timestamp	
+updated_at	timestamp	
+2. tabel transaksis
+Field	Tipe
+id	bigint
+user_id	bigint (relasi ke users)
+kode_transaksi	string
+total	decimal
+bayar	decimal
+kembalian	decimal
+created_at	timestamp
+updated_at	timestamp
+3. tabel transaksi_items
+Field	Tipe
+id	bigint
+transaksi_id	bigint
+product_id	bigint
+qty	int
+harga	decimal
+subtotal	decimal
+
+Cara Instalasi
+
+Clone repository
+
+git clone https://github.com/username/penjualan.git
+
+
+Masuk folder proyek
+
+cd penjualan
+
+
+Instal dependency
+
+composer install
+npm install && npm run build
+
+
+Copy file environment
+
+cp .env.example .env
+
+
+Buat database MySQL dan set .env
+
+Generate key
+
+php artisan key:generate
+
+
+Migrasi database
+
+php artisan migrate
+
+
+Jalankan aplikasi
+
+php artisan serve
+
+ Cara Menggunakan Aplikasi
+ 1. Login
+
+Masukkan email & password.
+
+ 2. Kelola Barang
+
+Menu Barang → Tambah Barang untuk menambahkan produk.
+
+ 3. Transaksi Kasir
+
+Pilih barang dari tabel
+
+Tambahkan ke keranjang
+
+Atur qty
+
+Klik Checkout
+
+Masukkan uang bayar
+
+Sistem validasi:
+
+Jika uang kurang → muncul peringatan
+
+Jika cukup → transaksi tersimpan
+
+4. Cetak Laporan
+
+Masuk menu Laporan, pilih periode, klik Export PDF.
+
+Logging
+
+Semua login & logout direkam:
+
+storage/logs/auth.log
+
+
+Semua error aplikasi:
+
+storage/logs/laravel.log
+storage/logs/local.ERROR
+storage/logs/local.WARNING
+storage/logs/local.INFO
+
+Kontribusi
+
+Pull Request dipersilakan:
+
+Tambah fitur stok otomatis
+
+Dashboard grafik laporan
+
+Role admin vs kasir

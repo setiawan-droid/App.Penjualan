@@ -13,4 +13,5 @@ class StringFormatter
     {
         return 'TRX-' . now()->format('YmdHis');
     }
+        
 }

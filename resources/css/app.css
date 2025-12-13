@@ -4,7 +4,7 @@
 /* ====== TABEL KASIR DARK MODE ====== */
 .table-dark {
     background-color: #1f2937; /* abu gelap */
-    color: #f9fafb;            /* teks putih */
+    color: #aeac17;            /* teks putih */
 }
 
 .table-dark th {
@@ -27,7 +27,7 @@
 /* tombol tambah */
 .btn-tambah {
     background-color: #2563eb;
-    color: white;
+    color: rgb(10, 6, 6);
 }
 
 .btn-tambah:hover {
@@ -36,10 +36,10 @@
 
 /* tombol hapus */
 .btn-hapus {
-    background-color: #dc2626;
-    color: white;
+    background-color: #0b7a9b;
+    color: rgb(10, 4, 4);
 }
 
 .btn-hapus:hover {
-    background-color: #b91c1c;
+    background-color: #c3d51c;
 }
