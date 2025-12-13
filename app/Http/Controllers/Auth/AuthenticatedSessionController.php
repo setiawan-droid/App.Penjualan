@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
     $request->authenticate();
     $request->session()->regenerate();
 
-    // Simpan ke file auth.log
+    //Logging Berhasil : Simpan ke file auth.log
     Log::channel('authlog')->info('User berhasil login', [
         'user' => auth()->user()->email,
         'ip' => request()->ip(),
