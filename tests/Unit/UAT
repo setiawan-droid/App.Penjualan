@@ -1,0 +1,156 @@
+1. Aktor yang Terlibat
+Aktor	Deskripsi
+Admin	Mengelola barang, melihat laporan
+Kasir	Melakukan transaksi penjualan
+Sistem	Memproses data & validasi
+2. Kriteria Penerimaan (Acceptance Criteria)
+Login hanya berhasil dengan data valid
+Transaksi gagal jika uang bayar kurang
+Stok barang berkurang setelah transaksi
+Laporan dapat difilter berdasarkan tanggal
+Sistem mencatat log login & logout
+
+4. Skenario UAT Menggunakan Gherkin
+FEATURE: LOGIN USER
+Feature: Login User
+  Sebagai user
+  Saya ingin login ke sistem
+  Agar dapat mengakses aplikasi penjualan
+
+✅ Scenario: Login berhasil dengan kredensial valid
+Scenario: Login berhasil
+  Given user berada di halaman login
+  When user mengisi email dan password yang valid
+  And user menekan tombol login
+  Then sistem mengarahkan user ke dashboard
+  And sistem mencatat log login berhasil
+
+❌ Scenario: Login gagal karena password salah
+Scenario: Login gagal - password salah
+  Given user berada di halaman login
+  When user mengisi email valid dan password salah
+  And user menekan tombol login
+  Then sistem menampilkan pesan error
+  And user tetap berada di halaman login
+
+📦 FEATURE: MANAJEMEN BARANG
+Feature: Manajemen Barang
+  Sebagai admin
+  Saya ingin mengelola data barang
+  Agar stok barang selalu terkontrol
+
+✅ Scenario: Menambahkan barang baru
+Scenario: Tambah barang
+  Given admin sudah login
+  When admin mengisi data barang dengan lengkap
+  And admin menyimpan data barang
+  Then sistem menyimpan data barang
+  And sistem menampilkan pesan sukses
+
+❌ Scenario: Tambah barang dengan data kosong
+Scenario: Tambah barang gagal
+  Given admin sudah login
+  When admin menyimpan data barang tanpa mengisi form
+  Then sistem menampilkan pesan validasi error
+
+🛒 FEATURE: TRANSAKSI PENJUALAN (KASIR)
+Feature: Transaksi Penjualan
+  Sebagai kasir
+  Saya ingin melakukan transaksi
+  Agar dapat memproses penjualan barang
+
+✅ Scenario: Transaksi berhasil
+Scenario: Proses transaksi berhasil
+  Given kasir sudah login
+  And kasir menambahkan barang ke keranjang
+  When kasir memasukkan uang bayar lebih besar dari total
+  And kasir menekan tombol proses pembayaran
+  Then sistem menyimpan transaksi
+  And sistem menampilkan kembalian
+
+❌ Scenario: Uang bayar kurang
+Scenario: Transaksi gagal - uang kurang
+  Given kasir sudah login
+  And kasir menambahkan barang ke keranjang
+  When kasir memasukkan uang bayar kurang dari total
+  And kasir menekan tombol proses pembayaran
+  Then sistem menampilkan pesan "Uang kurang"
+  And transaksi tidak disimpan
+
+📊 FEATURE: LAPORAN PENJUALAN
+Feature: Laporan Penjualan
+  Sebagai admin
+  Saya ingin melihat laporan penjualan
+  Agar dapat memantau kinerja penjualan
+
+✅ Scenario: Melihat laporan berdasarkan periode
+Scenario: Laporan periode tertentu
+  Given admin sudah login
+  When admin memilih tanggal awal dan tanggal akhir
+  And admin menekan tombol tampilkan laporan
+  Then sistem menampilkan data transaksi sesuai periode
+
+✅ Scenario: Export laporan ke PDF
+Scenario: Export laporan ke PDF
+  Given admin melihat laporan penjualan
+  When admin menekan tombol export PDF
+  Then sistem menghasilkan file PDF
+  And PDF berisi judul "Laporan Penjualan"
+
+📝 FEATURE: LOGGING AKTIVITAS
+Feature: Logging Aktivitas User
+  Sebagai admin
+  Saya ingin sistem mencatat aktivitas user
+  Agar dapat melakukan audit
+
+✅ Scenario: Logging login
+Scenario: Catat log login
+  Given user berhasil login
+  Then sistem mencatat aktivitas login ke file auth.log
+
+✅ Scenario: Logging logout
+Scenario: Catat log logout
+  Given user menekan tombol logout
+  Then sistem mencatat aktivitas logout ke file auth.log
+
+5️⃣ Data Uji (Test Data)
+Data	Nilai
+Email valid	user@example.com
+
+Password valid	password
+Barang	Sepatu
+Harga	100000
+Stok	10
+6️⃣ Kriteria Kelulusan UAT
+
+UAT dinyatakan LULUS jika:
+Semua scenario berstatus PASSED
+Tidak ada bug kritis
+Fitur utama berjalan sesuai kebutuhan user
+
+7️⃣ Kesimpulan
+Dokumen UAT ini memastikan bahwa aplikasi penjualan:
+Telah diuji dari sisi pengguna
+Memenuhi kebutuhan bisnis
+Siap digunakan di lingkungan produksi
+
+
+
+
+Prinsip Utama: DRY (Don’t Repeat Yourself)
+Masalah di controller saat ini
+Di BarangController kamu, pola ini berulang-ulang:
+return redirect()->route('barang.index')
+    ->with('success', 'Barang berhasil ...');
+
+ Masalahnya:
+Kode duplikat
+Jika nanti ingin:
+ganti route
+ganti format response
+tambahkan logging / flash lain
+→ harus ubah di banyak tempat
+Solusi reusable
+Kita buat satu tempat untuk menangani response.
+ Prinsip DRY:
+Satu logika → satu implementasi

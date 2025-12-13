@@ -42,7 +42,28 @@
             <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 {{ $slot }}
             </div>
-        </main>
+      
+
+         <!-- Alert -->
+        @if (session('success'))
+    <div class="mb-4 p-4 text-green-800 bg-green-100 rounded">
+         {{ session('success') }}
+    </div>
+@endif
+
+@if (session('warning'))
+    <div class="mb-4 p-4 text-yellow-800 bg-yellow-100 rounded">
+         {{ session('warning') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="mb-4 p-4 text-red-800 bg-red-100 rounded">
+         {{ session('error') }}
+    </div>
+@endif
+
+  </main>
 
         <!-- Footer -->
         <footer class="bg-white dark:bg-gray-800 py-6 border-t dark:border-gray-700 mt-10">
